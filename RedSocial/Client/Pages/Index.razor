@@ -1,10 +1,41 @@
 ﻿@page "/"
+@inject HttpClient httpClient
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+<input @bind="nuevoGenero.Genero" placeholder="Registra un nuevo género"/>
+<button @onclick="AgregarGenero">Guardar</button>
+
+@foreach (var genero in listaGeneros)
+{
+        @genero.Genero
+}
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+
+    List<Generos> listaGeneros = new List<Generos>();
+
+    Generos nuevoGenero = new Generos();
+
+
+    private async Task AgregarGenero()
+    {
+        //Guardar información
+        await httpClient.PostAsJsonAsync("https://localhost:7184/api/catalogos/agregargenero", nuevoGenero);
+        listaGeneros = await httpClient.GetFromJsonAsync<List<Generos>>("https://localhost:7184/api/perfil/generos");
+        //StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Obtener información
+        listaGeneros = await httpClient.GetFromJsonAsync<List<Generos>>("https://localhost:7184/api/catalogos/generos");
+    }
+
+}
 

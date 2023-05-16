@@ -33,5 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\js\" />
+    <Folder Include="Pages\Perfil\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Pages\Perfil\" />
   </ItemGroup>
 </Project>
