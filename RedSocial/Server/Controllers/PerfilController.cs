@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RedSocial.Server.Data;
@@ -22,7 +23,8 @@ namespace RedSocial.Server.Controllers
             this.context = context;
         }
 
-        [HttpPost]
+        //[DisableCors]
+        [HttpPost("crear")]
         public async Task<ActionResult<int>> Registrar(Perfil perfil)
         {
             context.Add(perfil);
@@ -30,6 +32,7 @@ namespace RedSocial.Server.Controllers
             return perfil.Id;
         }
 
+        //[DisableCors]
         [HttpGet("{Identificador:int}")]
         public async Task<ActionResult<Perfil>> ObtenerPerfil(int Identificador)
         {

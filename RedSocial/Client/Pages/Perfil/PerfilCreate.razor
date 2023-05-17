@@ -1,6 +1,61 @@
-﻿<h3>Component1</h3>
+﻿@page "/"
+@inject HttpClient httpClient
+
+<Row>
+    <Card>
+        <Field>
+            <Row>
+                <Column>
+                    <TextEdit Placeholder="Email" @bind-Text="perfil.Email" />
+                </Column>
+            </Row>
+            <Row>
+                <Column>
+                    <TextEdit Placeholder="Nickname" @bind-Text="perfil.Nickname" />
+                </Column>
+            </Row>
+            <Row>
+                <Column>
+                    <TextEdit Placeholder="Nombre" @bind-Text="perfil.Nombre" />
+                </Column>
+                <Column>
+                    <TextEdit Placeholder="Primer apellido" @bind-Text="perfil.PrimerApellido" />
+                </Column>
+                <Column>
+                    <TextEdit Placeholder="Segundo apellido" @bind-Text="perfil.SegundoApellido" />
+                </Column>
+            </Row>
+            <DateEdit TValue="DateTime" @bind-Date="@perfil.FechaNacimiento" />
+            <TextEdit Placeholder="Foto de perfil" @bind-Text="perfil.FotoPerfil" />
+            <Select TValue="int" @bind-SelectedValue="@perfil.GeneroId">
+                <SelectItem Value="0" Disabled="true">Selecciona el valor</SelectItem>
+                @foreach (var genero in listaGeneros)
+                {
+                    <SelectItem Value="@genero.Id">@genero.Genero</SelectItem>
+                }
+            </Select>
+            <TextEdit Placeholder="Biografía" @bind-Text="perfil.Biografia" />
+        </Field>
+        <Button Color="Color.Primary" @onclick="Guardar">Registrar</Button>
+    </Card>
+</Row>
+
+
 
 @code {
+    Perfil perfil = new Perfil();
 
+    List<Generos> listaGeneros = new List<Generos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaGeneros = await httpClient.GetFromJsonAsync<List<Generos>>("https://localhost:7184/api/catalogos/generos");
+    }
+
+    private async Task Guardar()
+{
+
+         await httpClient.PostAsJsonAsync("https://localhost:7184/api/perfil/crear", perfil);
+}
 }
 
