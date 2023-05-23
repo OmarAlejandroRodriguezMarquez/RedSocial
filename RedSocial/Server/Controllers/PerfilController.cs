@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace RedSocial.Server.Controllers
             this.context = context;
         }
 
-        //[DisableCors]
+        
         [HttpPost("crear")]
         public async Task<ActionResult<int>> Registrar(Perfil perfil)
         {
@@ -32,7 +34,7 @@ namespace RedSocial.Server.Controllers
             return perfil.Id;
         }
 
-        //[DisableCors]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{Identificador:int}")]
         public async Task<ActionResult<Perfil>> ObtenerPerfil(int Identificador)
         {
