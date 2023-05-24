@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization;
-@attribute [Authorize]
+@using RedSocial.Client.Auth;
 @inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ILoginService loginService
 
 <Row>
     <Card>
@@ -46,11 +48,17 @@
 
 @code {
     Perfil perfil = new Perfil();
+    UserInfo usuario = new UserInfo {UserName = "Omar", Email = "omar@ugto.mx", Password = "Dcea2023." };
+    UserToken userToken = new UserToken();
 
     List<Generos> listaGeneros = new List<Generos>();
 
     protected override async Task OnInitializedAsync()
     {
+        var logeo = await httpClient.PostAsJsonAsync("https://localhost:7184/api/usuarios/login", usuario);
+        userToken = logeo.Content.ReadFromJsonAsync<UserToken>().Result;
+        await loginService.Login(userToken.Token);
+        //await loginService.Login(logeo.Content.ToString());
         listaGeneros = await httpClient.GetFromJsonAsync<List<Generos>>("https://localhost:7184/api/catalogos/generos");
     }
 

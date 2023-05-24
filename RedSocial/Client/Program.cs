@@ -22,8 +22,10 @@ builder.Services
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<Autenticacion>();
+
 builder.Services.AddScoped<AuthenticationStateProvider, Autenticacion>(proveedor => 
 proveedor.GetRequiredService<Autenticacion>());
+
 builder.Services.AddScoped<ILoginService, Autenticacion>(proveedor =>
 proveedor.GetRequiredService<Autenticacion>());
 

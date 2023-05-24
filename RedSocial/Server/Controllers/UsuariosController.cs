@@ -31,7 +31,7 @@ namespace RedSocial.Server.Controllers
         [HttpPost("crear")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var usuario = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var usuario = new IdentityUser { UserName = model.UserName, Email = model.Email };
             var resultado = await userManager.CreateAsync(usuario, model.Password);
 
             if (resultado.Succeeded)
@@ -47,7 +47,7 @@ namespace RedSocial.Server.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo model)
         {
-            var resultado = await signInManager.PasswordSignInAsync(model.Email,
+            var resultado = await signInManager.PasswordSignInAsync(model.UserName,
                 model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (resultado.Succeeded)
@@ -64,15 +64,18 @@ namespace RedSocial.Server.Controllers
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, userInfo.Email),
+                new Claim(ClaimTypes.Name, userInfo.UserName),
+                new Claim(ClaimTypes.Email, userInfo.Email),
+                new Claim("ColorFavorito", "Verde"),
+                new Claim("Password", userInfo.Password), //mala práctica poner inf sensible
             };
 
-            var usuario = await userManager.FindByEmailAsync(userInfo.Email);
+            //var usuario = await userManager.FindByEmailAsync(userInfo.Email);
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiration = DateTime.UtcNow.AddDays(3);
+            var expiration = DateTime.UtcNow.AddMonths(1);
 
             var token = new JwtSecurityToken(
                 issuer: null,

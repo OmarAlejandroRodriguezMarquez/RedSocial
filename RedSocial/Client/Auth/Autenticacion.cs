@@ -20,13 +20,14 @@ namespace RedSocial.Client.Auth
         private readonly IJSRuntime js;
         private readonly HttpClient client;
 
+        private AuthenticationState Anonimo => new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
 
             var token = await js.ObtenerDeLocalStorage(TOKENKEY);
             if(token is null)
             {
-                Console.WriteLine("sin token");
+                return Anonimo;
             }
 
             return ConstruirAuthenticationState(token.ToString()!);

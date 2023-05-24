@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +17,7 @@ namespace RedSocial.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CatalogosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -33,6 +37,7 @@ namespace RedSocial.Server.Controllers
         }
 
         //[DisableCors]
+        [AllowAnonymous]
         [HttpPost("agregargenero")]
         public async Task<ActionResult<int>> GuardarGenero(Generos genero)
         {
